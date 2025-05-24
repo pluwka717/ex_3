@@ -118,6 +118,7 @@ int main(int argc,char *argv[]){
             free (lines_arr);
             EXIT_FAILURE;
         }
+    }
         if(fclose(output_stream)==EOF){
             perror("Error,closing");
             for (size_t j=0;j<num_lines_stored;++j) {
@@ -125,14 +126,15 @@ int main(int argc,char *argv[]){
             }
             free (lines_arr);
             EXIT_FAILURE;
+    
+        
         }
         for (size_t j=0;j<num_lines_stored;++j) {
-                free(lines_arr[j]);
-                lines_arr[j]=NULL;
-            }
-            free (lines_arr);
-            lines_arr=NULL;
-            printf("memory is cleared");
-            return 0;
-    }
+             free(lines_arr[j]);
+            lines_arr[j]=NULL;
+        }
+        free (lines_arr);
+        lines_arr=NULL;
+        printf("memory is cleared");
+        return 0;
 }
