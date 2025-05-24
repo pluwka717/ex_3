@@ -4,20 +4,30 @@
 
 #define MAX_LENGHT_L 256
 #define INITIAL_CAP 16
-int compare_strings (const void *ptr_a,const void *ptr_b)
+int compare_alpha (const void *ptr_a,const void *ptr_b)
 {
     const char *string_a=*(const char **)ptr_a;
     const char *string_b=*(const char **)ptr_b;
     return strcmp(string_a,string_b);
 }
+int compare_len_asc(const void *ptr_a,const void *ptr_b)
+{
+    const char *string_a=*(const char **)ptr_a;
+    const char *string_b=*(const char **)ptr_b;
+    size_t len_a =strlen(string_a);
+    size_t len_b =strlen(string_b);
+
+    if(len_a < len_b){
+        return -1;
+    } else return strcmp(string_a,string_b);
+}
+
 int main(int argc,char *argv[]){
     if (argc!=4){
         fprintf(stderr,"Error,incorrect value of arguments!\n");
         exit(EXIT_FAILURE);
     }
-
     printf("input file: '%s', output file: '%s',method '%s'\n",argv[1],argv[2],argv[3]);
-
     printf("opening of input file\n");
     FILE *input_stream = fopen(argv[1],"r");
     if (input_stream == NULL){
@@ -25,11 +35,13 @@ int main(int argc,char *argv[]){
         EXIT_FAILURE;
     }
     printf("ready for reading!\n");
-    
+    int (*method[])(const void*,const void*)={compare_alpha,compare_len_asc};
+    int number_of_method;
     char **lines_arr=NULL;
     size_t num_lines_stored=0;
     size_t current_capacity=0;
-
+    if(argv[3]=="len_asc") number_of_method=1;
+    if(argv[3]=="alpha") number_of_method=0;
     char line_read_buffer[MAX_LENGHT_L];
     printf("reading...\n");
     while(fgets(line_read_buffer,MAX_LENGHT_L,input_stream)!= NULL){
@@ -80,7 +92,7 @@ int main(int argc,char *argv[]){
     printf("reading is complete! %d \n",num_lines_stored);
     if (num_lines_stored>1){
         printf("sort %d lines by %s",num_lines_stored,argv[3]);
-        qsort(lines_arr,num_lines_stored, sizeof(char*),compare_strings);
+        qsort(lines_arr,num_lines_stored, sizeof(char*),method[number_of_method]);
         printf("complete!\n");
     } else printf("1 line\n");
 
